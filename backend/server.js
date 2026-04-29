@@ -57,27 +57,21 @@ function expandFuzzy(term) {
   return term;
 }
 
-app.use(cors({
-  origin: function(origin, callback) {
-    // Allow requests from FRONTEND_URL
-    const allowedOrigins = [
-      process.env.FRONTEND_URL,
-      "http://localhost:5173",
-      "http://localhost:3000",
-      "http://127.0.0.1:5173",
-      "*"
-    ];
-    
-    if (!origin || allowedOrigins.includes(origin) || origin.includes("vercel.app")) {
-      callback(null, true);
-    } else {
-      callback(null, true); // Allow all for now (Cloudflare relay)
-    }
-  },
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
-}));
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  } else {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type,Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
 app.use(express.json({ limit: "10mb" }));
 
 const limiter = rateLimit({
