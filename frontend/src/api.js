@@ -1,4 +1,4 @@
-const BASE = https://uptracker.onrender.com";
+const BASE = "https://uptracker.onrender.com";
 
 export async function analyzeArticles(sources, keywords = "", fromDate = null, toDate = null) {
   const res = await fetch(`${BASE}/api/analyze`, {
