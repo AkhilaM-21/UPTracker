@@ -361,11 +361,6 @@ app.post("/api/analyze", async (req, res) => {
       };
     });
 
-    // Deduplicate by URL
-    const uniqueMap = new Map();
-    articles.forEach(a => { if (!uniqueMap.has(a.url)) uniqueMap.set(a.url, a); });
-    articles = Array.from(uniqueMap.values());
-
     return res.json({ articles, count: articles.length });
   } catch (err) {
     console.error("Analyze error:", err);
